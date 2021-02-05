@@ -18,14 +18,14 @@ bot = commands.Bot(command_prefix='!')
 async def alarm():
     message_channel = bot.get_channel(target_channel_id)
     print(f"Got channel {message_channel}")
-    await message_channel.send("Your message")
+    await message_channel.send("It is 12:50AM, 10mins until ML4Iot class starts, stip urself up and head to zoom!")
 
 @alarm.before_loop
 async def before():
     targets = {
         1: {
-            "target": (12, 50, 0),
-            "alias": "Tuesday"
+            "target": (12, 50, 0), ## hour, mins, sec
+            "alias": "Tuesday" #~ alias tag for future implementation 
         }, 
 
         3: {
@@ -33,7 +33,7 @@ async def before():
             "alias": "Thursday"
         },
 
-        # testing 
+        # testing for different time w/ different day
         # 4: {
         #     "target": (2, 00, 00),
         #     "alias": "Friday"
@@ -44,15 +44,14 @@ async def before():
     
     while not is_target:
         today_day = dt.now().weekday()
-
-        print('today day')
+        print(f'Today day: {today_day} (index).)
 
         if today_day in targets:
-            
-            print('found target')
+            print('Found target.')
+
             target = dt.now().replace(hour=targets[today_day]["target"][0], minute=targets[today_day]["target"][1], second=targets[today_day]["target"][2])
-            
-            print('target is %s'% str(target))
+            print('Target is %s.'% str(target))
+
             wait_time = (target - dt.now()).total_seconds()
 
             if wait_time < 0:
@@ -60,25 +59,25 @@ async def before():
                 end_day = dt.now().replace(hour=23, minute=59, second=59)
                 wait_time = (end_day - dt.now()).total_seconds() + 5.0
                 
-            print(f'waiting for {wait_time}')
+            print(f'Waiting for {wait_time}.')
             await asyncio.sleep(wait_time)
             is_target = True
 
 
         else:
-            print ('no task for today waiting for tomorrow')
-            await asyncio.sleep(43200) # 12 hours
+            print ('No task for today, waiting for tomorrow.')
+            await asyncio.sleep(43200) ## 12 hours in second
         
 
     await bot.wait_until_ready()
-    print("Finished waiting")
+    print("Finished waiting.")
 
 
 @bot.event
 async def on_ready():
-    print(f'{bot.user} has connected to Discord!')
+    print(f'{bot.user} is Online') # confirmed connection
 
-@bot.listen('on_message')
+@bot.listen('on_message') # use on_message to not block away the command from below
 async def listen(message):
     if message.author == bot.user:
         return
@@ -90,14 +89,11 @@ async def listen(message):
         await message.channel.send("OH HELL NO!!!")
 
 
-@bot.command(name="ravioli")
+@bot.command(name="ravioli") # call when there is cammand that matched
 async def ravioli(ctx):
     await ctx.channel.send(file=discord.File('ravioli.gif'))
     await ctx.channel.send("\"Ravioli, Ravioli, what's in the pocket-oli?\"")
 
-    
-
-    
 
 alarm.start()
 bot.run(TOKEN)
