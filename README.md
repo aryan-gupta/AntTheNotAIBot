@@ -2,6 +2,8 @@
 A silly bot for discord, I don't even think its gonna work anytime soon.
 
 # Description
+It started all with a joke to create a bot in the discord channel. The purpose it to remind classmates to be show up for the zoom meeting for lecture.
+
 ## Timer
 It sends out reminder 10 mins before class starts.
 
