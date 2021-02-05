@@ -9,10 +9,10 @@ from datetime import datetime as dt
 
 load_dotenv(os.path.join(os.getcwd(), '.env'))
 TOKEN = os.getenv('DISCORD_TOKEN') # taking discord bot token form .env file
-target_channel_id = os.getenv('TARGET_CHANNELID') # taking from .env
+target_channel_id = os.getenv('TARGET_CHANNEL') # taking from .env
 # print(TOKEN)
 
-bot = commands.Bot('!')
+bot = commands.Bot(command_prefix='!')
 
 @tasks.loop(hours=1)
 async def alarm():
@@ -34,7 +34,7 @@ async def before():
         },
 
         # testing 
-        # 5: {
+        # 4: {
         #     "target": (2, 00, 00),
         #     "alias": "Friday"
         # }
@@ -74,11 +74,30 @@ async def before():
     print("Finished waiting")
 
 
-# @bot.event
-# async def on_ready():
-#     print(f'{client.user} has connected to Discord!')
+@bot.event
+async def on_ready():
+    print(f'{bot.user} has connected to Discord!')
 
+@bot.listen('on_message')
+async def listen(message):
+    if message.author == bot.user:
+        return
+
+    if "oh no" in message.content.lower():
+        await message.channel.send("Oh YES")
+
+    if "hell yeah" or "hell yes" in message.content.lower():
+        await message.channel.send("OH HELL NO!!!")
+
+
+@bot.command(name="ravioli")
+async def ravioli(ctx):
+    await ctx.channel.send(file=discord.File('ravioli.gif'))
+    await ctx.channel.send("\"Ravioli, Ravioli, what's in the pocket-oli?\"")
+
+    
+
+    
 
 alarm.start()
-
 bot.run(TOKEN)
