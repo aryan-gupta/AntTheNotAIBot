@@ -1,7 +1,7 @@
 # AntTheNotAIBot
 A silly bot for discord, I don't even think its gonna work anytime soon.
 
-#Description
+# Description
 ## Timer
 It sends out reminder 10 mins before class starts.
 
