@@ -9,20 +9,37 @@ from datetime import datetime as dt
 
 load_dotenv(os.path.join(os.getcwd(), '.env'))
 TOKEN = os.getenv('DISCORD_TOKEN') # taking discord bot token form .env file
-target_channel_id = os.getenv('TARGET_CHANNEL') # taking from .env
+target_channel_id = os.getenv('TEST_CHANNEL') # taking from .env
+# course_name = "ML4Iot"
+# print(target_channel_id)
 # print(TOKEN)
 
-bot = commands.Bot(command_prefix='!')
+bot = commands.Bot("!")
 
-@tasks.loop(hours=1)
+
+@tasks.loop(hours=24)
 async def alarm():
-    message_channel = bot.get_channel(target_channel_id)
-    print(f"Got channel {message_channel}")
-    await message_channel.send("It is 12:50AM, 10mins until ML4Iot class starts, stip urself up and head to zoom!")
+    await bot.wait_until_ready() #! very important, or u get NoneType for Channel ID
+
+    channel = bot.get_channel(int(target_channel_id))
+    print(f"Got channel {channel}")
+
+    for i in range(4):
+        await asyncio.sleep(10)
+        await channel.send("@everyone, 10mins until MLIot, buckle up and rocket to the zoom!!!")
+
+
 
 @alarm.before_loop
 async def before():
     targets = {
+        # testing for different time w/ different day
+        4: {
+            "target": (23, 32, 00),
+            "alias": "Friday"
+        },
+        #============================================
+
         1: {
             "target": (12, 50, 0), ## hour, mins, sec
             "alias": "Tuesday" #~ alias tag for future implementation 
@@ -31,20 +48,14 @@ async def before():
         3: {
             "target": (12, 50, 0),
             "alias": "Thursday"
-        },
-
-        # testing for different time w/ different day
-        # 4: {
-        #     "target": (2, 00, 00),
-        #     "alias": "Friday"
-        # }
+        }
     }
 
     is_target = False
     
     while not is_target:
         today_day = dt.now().weekday()
-        print(f'Today day: {today_day} (index).)
+        print(f'Today day: {today_day} (index).')
 
         if today_day in targets:
             print('Found target.')
@@ -81,12 +92,21 @@ async def on_ready():
 async def listen(message):
     if message.author == bot.user:
         return
+    
+    if 'No' in message.content:
+        await message.channel.send("YES")
+
+    if 'Yes' in message.content:
+        await message.channel.send("NO")
 
     if "oh no" in message.content.lower():
         await message.channel.send("Oh YES")
 
-    if "hell yeah" or "hell yes" in message.content.lower():
-        await message.channel.send("OH HELL NO!!!")
+    if "hell yeah" or "oh yes" in message.content.lower():
+        await message.channel.send("HeeeeeLL No!!!")
+
+    if "this is a loop" in message.content.lower():
+        await message.channel.send("this is also a loop")        
 
 
 @bot.command(name="ravioli") # call when there is cammand that matched
