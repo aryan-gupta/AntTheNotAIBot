@@ -9,7 +9,11 @@ from datetime import datetime as dt
 
 load_dotenv(os.path.join(os.getcwd(), '.env'))
 TOKEN = os.getenv('DISCORD_TOKEN') # taking discord bot token form .env file
-target_channel_id = os.getenv('TEST_CHANNEL') # taking from .env
+
+# target_channel_id = os.getenv('MAIN_CHANNEL') # taking from .env
+# target_channel_id = os.getenv('TEST_CHANNEL') 
+target_channel_id = os.getenv('SPAM_CHANNEL') 
+
 # course_name = "ML4Iot"
 # print(target_channel_id)
 # print(TOKEN)
@@ -19,14 +23,18 @@ bot = commands.Bot("!")
 
 @tasks.loop(hours=24)
 async def alarm():
-    await bot.wait_until_ready() #! very important, or u get NoneType for Channel ID
+    await bot.wait_until_ready() ## very important, or u get NoneType for Channel ID
 
     channel = bot.get_channel(int(target_channel_id))
     print(f"Got channel {channel}")
 
-    for i in range(4):
-        await asyncio.sleep(10)
-        await channel.send("@everyone, 10mins until MLIot, buckle up and rocket to the zoom!!!")
+    for mins in range(10,0,-1):
+        print(f'msg waiting to send (minUntilIdx:{mins})')
+        await asyncio.sleep(60)
+        
+        await channel.send(f"TESTING, {mins}mins until MLIot, buckle up and rocket to the zoom!!!")
+        # await channel.send(f"@here, {mins}mins until MLIot, buckle up and rocket to the zoom!!!")
+        print(f'msg sent (minUntilIdx:{mins})')
 
 
 
@@ -35,7 +43,7 @@ async def before():
     targets = {
         # testing for different time w/ different day
         4: {
-            "target": (23, 32, 00),
+            "target": (23, 45, 00),
             "alias": "Friday"
         },
         #============================================
