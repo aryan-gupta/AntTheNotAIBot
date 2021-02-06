@@ -1,5 +1,6 @@
 import os
 import discord
+import random
 
 from dotenv import load_dotenv
 from discord.ext import commands, tasks
@@ -8,9 +9,12 @@ import asyncio
 from datetime import datetime as dt
 
 load_dotenv(os.path.join(os.getcwd(), '.env'))
-TOKEN = os.getenv('DISCORD_TOKEN') # taking discord bot token form .env file
 
-# target_channel_id = os.getenv('MAIN_CHANNEL') # taking from .env
+# taking discord bot token form .env file
+TOKEN = os.getenv('DISCORD_TOKEN') 
+
+# taking from .env
+# target_channel_id = os.getenv('MAIN_CHANNEL') 
 # target_channel_id = os.getenv('TEST_CHANNEL') 
 target_channel_id = os.getenv('SPAM_CHANNEL') 
 
@@ -30,10 +34,10 @@ async def alarm():
 
     for mins in range(10,0,-1):
         print(f'msg waiting to send (minUntilIdx:{mins})')
-        await asyncio.sleep(60)
-        
-        await channel.send(f"TESTING, {mins}mins until MLIot, buckle up and rocket to the zoom!!!")
-        # await channel.send(f"@here, {mins}mins until MLIot, buckle up and rocket to the zoom!!!")
+        await asyncio.sleep(60) # wait for 1 min, then send following msgs
+
+        await channel.send(f"TESTING, {mins}mins until ML4Iot, buckle up and rocket to the zoom!!!")
+        # await channel.send(f"@here, {mins}mins until ML4Iot, buckle up and rocket to the zoom!!!")
         print(f'msg sent (minUntilIdx:{mins})')
 
 
@@ -42,10 +46,10 @@ async def alarm():
 async def before():
     targets = {
         # testing for different time w/ different day
-        4: {
-            "target": (23, 45, 00),
-            "alias": "Friday"
-        },
+        # 4: {
+        #     "target": (23, 45, 00),
+        #     "alias": "Friday"
+        # },
         #============================================
 
         1: {
@@ -101,20 +105,16 @@ async def listen(message):
     if message.author == bot.user:
         return
     
-    if 'No' in message.content:
-        await message.channel.send("YES")
-
-    if 'Yes' in message.content:
-        await message.channel.send("NO")
+    if 'I ' in message.content:
+        huh_gif = ['huh0.gif','huh1.gif','huh2.gif','huh3.gif','huh4.gif','huh5.gif','huh6.gif','huh7.gif','huh8.gif','huh9.gif']
+        response_gif = random.choice(huh_gif)
+        await message.channel.send(file=discord.File(response_gif))
 
     if "oh no" in message.content.lower():
         await message.channel.send("Oh YES")
 
-    if "hell yeah" or "oh yes" in message.content.lower():
-        await message.channel.send("HeeeeeLL No!!!")
-
-    if "this is a loop" in message.content.lower():
-        await message.channel.send("this is also a loop")        
+    if "oh yes" in message.content.lower():
+        await message.channel.send("Oh NO")      
 
 
 @bot.command(name="ravioli") # call when there is cammand that matched
