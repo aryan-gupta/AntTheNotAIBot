@@ -10,46 +10,67 @@ from datetime import datetime as dt
 
 load_dotenv(os.path.join(os.getcwd(), '.env'))
 
-# taking discord bot token form .env file
+## taking discord bot token form .env file
 TOKEN = os.getenv('DISCORD_TOKEN') 
+# print(f'Token: {TOKEN}')
 
-# taking from .env
+## taking from .env
 # target_channel_id = os.getenv('MAIN_CHANNEL') 
-# target_channel_id = os.getenv('TEST_CHANNEL') 
-target_channel_id = os.getenv('SPAM_CHANNEL') 
+# target_channel_id = os.getenv(f'SPAM_CHANNEL') 
+# target_channel_id = os.getenv(f'TEST_CHANNEL') 
 
-# course_name = "ML4Iot"
-# print(target_channel_id)
-# print(TOKEN)
+# course_name = ('ML4IoT')
+
+channel_choice = input(f'Select channel (MAIN, SPAM, TEST)(str): ')
+print(f'Channel choice: {channel_choice} \n')
+
+target_channel_id = os.getenv(f'{channel_choice}_CHANNEL') 
+print(f'Channel ID: {target_channel_id} \n')
+
+course_name = input(f'Enter course name(str): ')
+print(f'Course name: {course_name} \n')
+
 
 bot = commands.Bot("!")
 
 
 @tasks.loop(hours=24)
 async def alarm():
-    await bot.wait_until_ready() ## very important, or u get NoneType for Channel ID
+    await bot.wait_until_ready() #~ very important, or u get NoneType for Channel ID
 
     channel = bot.get_channel(int(target_channel_id))
     print(f"Got channel {channel}")
 
     for mins in range(10,0,-1):
-        print(f'msg waiting to send (minUntilIdx:{mins})')
-        await asyncio.sleep(60) # wait for 1 min, then send following msgs
-
-        await channel.send(f"TESTING, {mins}mins until ML4Iot, buckle up and rocket to the zoom!!!")
+        await channel.send(f"TESTING, {mins}mins until {course_name}, buckle up and rocket to the zoom!!!")
         # await channel.send(f"@here, {mins}mins until ML4Iot, buckle up and rocket to the zoom!!!")
         print(f'msg sent (minUntilIdx:{mins})')
 
+        print(f'msg waiting to send (minUntilIdx:{mins})')
+        await asyncio.sleep(60) # wait for 1 min, then send following msgs
 
 
 @alarm.before_loop
 async def before():
+    # testHourInput, testMinInput, testSecInput = [
+    #     int(x) for x in input("Enter custome time (hour min sec): ").split()
+    #     ]
+    # print(f'Custom testing time: hour:{testHourInput} min:{testMinInput} sec:{testSecInput} \n')
+    
+    # day_of_week = input(f'Enter day of week in index (Monday-0, Tuesday-1...)(int): ')
+    # print(f'Dat of week (in index): {day_of_week}')
+    
     targets = {
         # testing for different time w/ different day
-        # 4: {
-        #     "target": (23, 45, 00),
-        #     "alias": "Friday"
+        # {day_of_week}: {
+        #     "target": ({testHourInput}, {testMinInput}, {testSecInput}),
+        #     "alias": "CustomTime"
         # },
+
+        5: {
+            "target": (20, 13, 30), ## hour, mins, sec
+            "alias": "Tuesday" #~ alias tag for future implementation 
+        }, 
         #============================================
 
         1: {
@@ -121,6 +142,9 @@ async def listen(message):
 async def ravioli(ctx):
     await ctx.channel.send(file=discord.File('ravioli.gif'))
     await ctx.channel.send("\"Ravioli, Ravioli, what's in the pocket-oli?\"")
+ 
+
+
 
 
 alarm.start()
