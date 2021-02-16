@@ -41,9 +41,9 @@ async def alarm():
     channel = bot.get_channel(int(target_channel_id))
     print(f"Got channel {channel}")
 
-    for mins in range(10,0,-1):
-        await channel.send(f"TESTING, {mins}mins until {course_name}, buckle up and rocket to the zoom!!!")
-        # await channel.send(f"@here, {mins}mins until ML4Iot, buckle up and rocket to the zoom!!!")
+    for mins in range(2,0,-1):
+        # await channel.send(f"TESTING, {mins}mins until {course_name}, buckle up and rocket to the zoom!!!")
+        await channel.send(f"@here, {mins}mins until ML4Iot, buckle up and rocket to the zoom!!!")
         print(f'msg sent (minUntilIdx:{mins})')
 
         print(f'msg waiting to send (minUntilIdx:{mins})')
@@ -74,12 +74,12 @@ async def before():
         #============================================
 
         1: {
-            "target": (12, 50, 0), ## hour, mins, sec
+            "target": (12, 58, 0), ## hour, mins, sec
             "alias": "Tuesday" #~ alias tag for future implementation 
         }, 
 
         3: {
-            "target": (12, 50, 0),
+            "target": (12, 58, 0),
             "alias": "Thursday"
         }
     }
@@ -135,16 +135,24 @@ async def listen(message):
         await message.channel.send("Oh YES")
 
     if "oh yes" in message.content.lower():
-        await message.channel.send("Oh NO")      
+        await message.channel.send("Oh NO")          
 
+    # if " " in message.content.lower():
+    #     print ('Response msg: ')
+    #     reply = input()
+    #     await message.channel.send(f"{reply}")        
 
 @bot.command(name="ravioli") # call when there is cammand that matched
 async def ravioli(ctx):
     await ctx.channel.send(file=discord.File('ravioli.gif'))
     await ctx.channel.send("\"Ravioli, Ravioli, what's in the pocket-oli?\"")
+
+@bot.command(name="whoru") # call when there is cammand that matched
+async def whoru(ctx):
+    await ctx.channel.send("I look like this: ")
+    await ctx.channel.send(file=discord.File('myface.jpg'))
+    await ctx.channel.send("And I think I am a bot.")
  
-
-
 
 
 alarm.start()
